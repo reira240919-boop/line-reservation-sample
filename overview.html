@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>LINE予約管理 説明図</title>
+<style>
+  /* しくみと安全を説明する図。1600×1120 の1枚を、横向き A4 の PDF にする */
+  :root {
+    --bg: #f3f5f8;
+    --card: #ffffff;
+    --fg: #1d2633;
+    --muted: #5d6878;
+    --rule: #d6dce4;
+    --server: #e8873a;
+    --server-soft: #fdf3ea;
+    --phone: #2f64a8;
+    --phone-soft: #edf3fb;
+    --line: #5d6878;
+    --line-soft: #f6f7f9;
+    --book: #3f8a3c;
+    --own: #2f64a8;
+    --gate: #b42318;
+    --out: #7a8494;
+    --font: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif;
+  }
+  @page { size: A4 landscape; margin: 0; }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body { margin: 0; background: var(--bg); }
+  body { font-family: var(--font); color: var(--fg); }
+  .canvas { position: relative; width: 1600px; height: 1120px; margin: 0 auto; background: var(--bg); }
+  .abs { position: absolute; }
+  @media print {
+    .canvas { zoom: .70; }
+  }
+
+  header { left: 40px; top: 28px; right: 40px; }
+  header h1 { margin: 0; font-size: 34px; font-weight: 800; letter-spacing: .02em; }
+  header p { margin: 6px 0 0; font-size: 16px; color: var(--muted); }
+
+  .zone { border: 3px solid; padding: 12px 18px; }
+  .zone .label { font-size: 17px; font-weight: 800; }
+  .zone .label small { font-weight: 500; font-size: 14px; color: var(--muted); margin-left: 8px; }
+  .phone { border-color: var(--phone); background: var(--phone-soft); }
+  .phone .label { color: var(--phone); }
+  .line { border-color: var(--line); background: var(--line-soft); }
+  .line .label { color: #3d4757; }
+  .server { border-color: var(--server); background: var(--server-soft); border-width: 4px; }
+  .server .label { color: #b85e17; }
+
+  .box { background: var(--card); border: 2px solid var(--rule); padding: 14px 16px; display: grid; align-content: start; gap: 4px; }
+  .box h2 { margin: 0; font-size: 21px; font-weight: 800; }
+  .box p { margin: 0; font-size: 13.5px; color: var(--muted); line-height: 1.55; }
+  .box p b { color: var(--fg); font-weight: 700; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .chip { font-size: 13px; padding: 3px 9px; background: var(--server-soft); border: 1px solid #f1c9a5; color: #8a4a12; }
+  .gate { font-size: 13px; font-weight: 700; color: #fff; background: var(--gate); padding: 4px 10px; justify-self: start; margin-top: 6px; }
+
+  .step { font-size: 13.5px; font-weight: 700; line-height: 1.45; white-space: nowrap; background: #fff; border: 1px solid currentColor; padding: 1px 6px; }
+  .step.s { color: var(--book); }
+  .step.i { color: var(--own); }
+
+  .legend { right: 40px; top: 40px; display: flex; gap: 18px; font-size: 14px; color: var(--muted); align-items: center; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { display: inline-block; width: 28px; height: 4px; }
+
+  .safety { left: 40px; right: 40px; top: 800px; height: 290px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .safety h3 { margin: 0 0 4px; font-size: 15px; letter-spacing: .08em; color: var(--muted); grid-column: 1 / -1; }
+  .card { background: var(--card); border-top: 5px solid; padding: 16px 18px; display: grid; align-content: start; gap: 8px; }
+  .card h4 { margin: 0; font-size: 19px; font-weight: 800; }
+  .card ul { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; font-size: 13.5px; line-height: 1.6; color: #2c3644; }
+  .card ul small { color: var(--muted); font-size: 13px; }
+  .card.gatec { border-color: var(--gate); }
+  .card.serverc { border-color: var(--server); }
+  .card.outc { border-color: var(--out); }
+</style>
+</head>
+<body>
+<div class="canvas">
+
+  <header class="abs">
+    <h1>LINE 予約管理 のしくみと安全の境界</h1>
+    <p>LINE予約管理（サンプル）　しくみと安全の説明 ／ LINE の中で空いている日時を選んで予約でき、確認とお知らせも LINE に届きます</p>
+  </header>
+  <div class="abs legend">
+    <span><i style="background:var(--book)"></i>予約するまで（①〜⑤）</span>
+    <span><i style="background:var(--own)"></i>お知らせと管理画面（Ⓐ〜Ⓓ）</span>
+  </div>
+
+  <!-- 区域 -->
+  <div class="abs zone phone" style="left:40px; top:140px; width:300px; height:620px;">
+    <div class="label">スマホ<small>予約する人・管理する人</small></div>
+  </div>
+  <div class="abs zone line" style="left:370px; top:140px; width:270px; height:620px;">
+    <div class="label">LINE<small>LINE 社のサービス</small></div>
+  </div>
+  <div class="abs zone server" style="left:670px; top:140px; width:890px; height:620px;">
+    <div class="label">サーバー<small>サイト（Vercel）と保管庫（Supabase）。中身はすべてここ</small></div>
+  </div>
+
+  <!-- 箱：スマホ -->
+  <div class="abs box" style="left:60px; top:190px; width:250px; height:320px;">
+    <h2>予約する人</h2>
+    <p>いつもの LINE で、メニューから予約ページを開く。空いている日時を選び、お名前とご相談内容を入れる</p>
+    <p>確認メッセージと、相談日前のお知らせが LINE に届く</p>
+    <p>届いたリンクから、日程の変更・キャンセルができる（相談日の3日前まで）</p>
+  </div>
+  <div class="abs box" style="left:60px; top:570px; width:250px; height:170px;">
+    <h2>管理する人</h2>
+    <p>管理画面で予約を見る・メモする・キャンセルする。受付時間・休み・送る文面を直す</p>
+    <p>予約や変更が入ると LINE に通知が届く</p>
+  </div>
+
+  <!-- 箱：LINE -->
+  <div class="abs box" style="left:400px; top:190px; width:210px; height:360px;">
+    <h2 style="font-size:18px">公式アカウント</h2>
+    <p>メニューから予約ページを開く入口。確認・お知らせ・通知もここから届く</p>
+    <p><b>LIFF</b>（LINE の中でウェブのページを開くしくみ）</p>
+    <p><b>Messaging API</b>（LINE とプログラムをつなぐ窓口）</p>
+  </div>
+
+  <!-- 箱：サーバー -->
+  <div class="abs box" style="left:700px; top:190px; width:390px; height:170px;">
+    <h2>予約ページ</h2>
+    <p><b>Vercel</b>（ウェブサイトを動かすサービス）で動く。空いている日時を出し、予約・変更・キャンセルを受け付ける</p>
+    <div class="gate">本人を確認：予約した LINE の人だけが開ける</div>
+  </div>
+  <div class="abs box" style="left:700px; top:380px; width:390px; height:170px;">
+    <h2>LINE の受付と毎朝のお知らせ</h2>
+    <p>友だち追加を受け取って、送り先を覚える。毎朝9時に自動で動き、リマインドと当日の Zoom 案内を送る</p>
+    <div class="gate">署名を確認：LINE から届いたものだけ通す</div>
+  </div>
+  <div class="abs box" style="left:700px; top:570px; width:390px; height:170px;">
+    <h2>管理画面</h2>
+    <p>予約と同じサイトの中にある。予約一覧・受付時間・休み・メッセージの文面を、スマホでもパソコンでも直せる</p>
+    <div class="gate">パスワードを確認：入れるのは管理する人だけ</div>
+  </div>
+  <div class="abs box" style="left:1170px; top:190px; width:370px; height:550px;">
+    <h2>保管庫</h2>
+    <p><b>Supabase</b>（データをためておく場所）。外から直接は読めない。読み書きできるのはサーバーだけ</p>
+    <div class="chips">
+      <span class="chip">予約</span>
+      <span class="chip">ご相談内容・メモ</span>
+      <span class="chip">受付時間</span>
+      <span class="chip">休みの日・時間帯</span>
+      <span class="chip">メッセージの文面</span>
+      <span class="chip">LINE の友だち</span>
+      <span class="chip">管理者の設定</span>
+    </div>
+    <p style="margin-top:10px">同じ日時に2件入らないよう、保管庫の側でも止める</p>
+    <p>お知らせを送ったかどうかも残すので、同じ人に二度は送らない</p>
+  </div>
+
+  <!-- 矢印 -->
+  <svg class="abs" style="left:0; top:0;" width="1600" height="1120" viewBox="0 0 1600 1120" aria-hidden="true">
+    <defs>
+      <marker id="hs" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3f8a3c"/></marker>
+      <marker id="hi" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f64a8"/></marker>
+    </defs>
+    <g fill="none" stroke-width="4">
+      <!-- ① 予約する人 → LINE -->
+      <path d="M310,240 H396" stroke="#3f8a3c" marker-end="url(#hs)"/>
+      <!-- ② LINE → 予約ページ -->
+      <path d="M610,240 H696" stroke="#3f8a3c" marker-end="url(#hs)"/>
+      <!-- ③ 予約ページ ⇄ 保管庫 -->
+      <path d="M1090,260 H1166" stroke="#3f8a3c" marker-start="url(#hs)" marker-end="url(#hs)"/>
+      <!-- ④ 予約ページ → LINE → 予約する人 -->
+      <path d="M700,320 H614" stroke="#3f8a3c" marker-end="url(#hs)"/>
+      <path d="M400,320 H314" stroke="#3f8a3c" marker-end="url(#hs)"/>
+      <!-- ⑤ LINE → 管理する人（予約・変更・キャンセルの通知） -->
+      <path d="M505,550 V600 H314" stroke="#3f8a3c" stroke-dasharray="10 6" marker-end="url(#hs)"/>
+      <!-- Ⓐ LINE → 受付（友だち追加） -->
+      <path d="M610,420 H696" stroke="#2f64a8" stroke-dasharray="10 6" marker-end="url(#hi)"/>
+      <!-- Ⓑ 受付 ⇄ 保管庫 -->
+      <path d="M1090,460 H1166" stroke="#2f64a8" stroke-dasharray="10 6" marker-start="url(#hi)" marker-end="url(#hi)"/>
+      <!-- Ⓑ 毎朝のお知らせ → LINE → 予約する人 -->
+      <path d="M700,500 H614" stroke="#2f64a8" stroke-dasharray="10 6" marker-end="url(#hi)"/>
+      <path d="M400,480 H314" stroke="#2f64a8" stroke-dasharray="10 6" marker-end="url(#hi)"/>
+      <!-- Ⓒ 管理する人 → 管理画面 -->
+      <path d="M310,680 H696" stroke="#2f64a8" stroke-dasharray="10 6" marker-end="url(#hi)"/>
+      <!-- Ⓓ 管理画面 ⇄ 保管庫 -->
+      <path d="M1090,650 H1166" stroke="#2f64a8" stroke-dasharray="10 6" marker-start="url(#hi)" marker-end="url(#hi)"/>
+    </g>
+  </svg>
+
+  <!-- 矢印の説明 -->
+  <div class="abs step s" style="left:312px; top:208px;">① メニュー</div>
+  <div class="abs step s" style="left:618px; top:208px;">② 開く</div>
+  <div class="abs step s" style="left:1088px; top:226px;">③ 読み書き</div>
+  <div class="abs step s" style="left:626px; top:326px;">④ 確認</div>
+  <div class="abs step s" style="left:322px; top:326px;">④ 確認</div>
+  <div class="abs step s" style="left:362px; top:566px;">⑤ 管理する人に通知</div>
+  <div class="abs step i" style="left:606px; top:390px;">Ⓐ 友だち追加</div>
+  <div class="abs step i" style="left:1088px; top:426px;">Ⓑ 読み書き</div>
+  <div class="abs step i" style="left:614px; top:506px;">Ⓑ 毎朝9時</div>
+  <div class="abs step i" style="left:316px; top:446px;">Ⓑ お知らせ</div>
+  <div class="abs step i" style="left:420px; top:688px;">Ⓒ 開いて設定する</div>
+  <div class="abs step i" style="left:1098px; top:616px;">Ⓓ 保存</div>
+
+  <!-- 安全の境界 -->
+  <section class="abs safety">
+    <h3>安全の境界</h3>
+    <div class="card gatec">
+      <h4>入口の確認</h4>
+      <ul>
+        <li>予約の確認・変更ページは、予約したときと同じ LINE の人でなければ開けない</li>
+        <li>管理画面は、パスワードで入った人だけが開ける<br><small>パスワードはそのままの形では残さない。7日たつと入り直し</small></li>
+        <li>LINE からの知らせは署名（LINE が付ける本物のしるし）を確かめる。毎朝の自動送信も、合言葉つきの呼び出しでしか動かない</li>
+      </ul>
+    </div>
+    <div class="card serverc">
+      <h4>データを置く場所</h4>
+      <ul>
+        <li>予約・ご相談内容・受付時間・休み・文面・LINE の友だちは、すべて保管庫（Supabase）に置く</li>
+        <li>保管庫はサーバーだけが読み書きできる。鍵（外のサービスを使うための合言葉）は画面に出ない</li>
+        <li>置く国はサイトと保管庫を作るときに決める<br><small>今のサイトの設定は地域の指定なし（Vercel の初期設定は米国）</small></li>
+      </ul>
+    </div>
+    <div class="card outc">
+      <h4>外に送るもの</h4>
+      <ul>
+        <li>LINE に送るのは、予約の確認・相談日前のリマインド・当日の Zoom 案内・変更やキャンセルの知らせだけ</li>
+        <li>管理する人への通知に載るのは、日時・お名前・ご相談内容・コメント</li>
+        <li>AI など、ほかの外のサービスには送らない</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
